@@ -1,0 +1,17 @@
+# Staging skeleton. Do not expose AURA or model ports publicly.
+services:
+  aura:
+    build: ../aura-intelligence
+    restart: unless-stopped
+    environment:
+      AURA_MODEL_URL: http://model:8000/v1/chat/completions
+      AURA_MODEL_NAME: ${AURA_MODEL_NAME:?set model name}
+      AURA_INTERNAL_TOKEN: ${AURA_INTERNAL_TOKEN:?set token}
+    networks: [private]
+    ports:
+      - "127.0.0.1:8080:8080"
+  # A separately provisioned GPU-backed vLLM service should be attached
+  # to the private network with DNS name "model"; not provided here.
+networks:
+  private:
+    internal: true
